@@ -1,14 +1,27 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const helmet = require('helmet');
+const compression = require('compression');
 
-const port = 3000;
+app.use(express.urlencoded());
+app.use(express.json());
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World');
+app.use(helmet());
+app.use(compression());
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin",
+        '*');
+    res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With");
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, DELETE, GET, POST, PATCH');
+        return res.status(200).json({});
+    }
+    next();
 });
 
-server.listen(port, '127.0.0.1', () => {
-    console.log('Server running');
+// User Authentication
+app.use('/login', (req, res, next) => {
+
 });
+//
