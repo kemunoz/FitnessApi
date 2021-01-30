@@ -3,6 +3,7 @@ const app = express();
 const helmet = require('helmet');
 const compression = require('compression');
 const mongoose = require('mongoose');
+const User = require('./api/routes/models/user');
 
 app.use(express.urlencoded());
 app.use(express.json());
@@ -27,9 +28,30 @@ app.use((req, res, next) => {
     next();
 });
 
-// User Authentication
-app.use('/login', (req, res, next) => {
+// User Authentication: signup
+app.use('/signup', (req, res, next) => {
     const { username, password } = req.body;
+    User.findOne({ username }, (err, result) => {
+        if (result) {
+            //user already exists
+        } else {
+            //create a new user
+        }
+    });
 
 });
-//
+
+//User Authentication: login
+//if jwt is invalid then the user will get anew one
+//only if the username and answers are correct
+
+app.use('/login', (req, res, next) => {
+    const { username, password } = req.body;
+    User.findOne({ username }, (err, result) => {
+        if (result) {
+            //user exists
+        } else {
+            //user does not exist
+        }
+    });
+});
