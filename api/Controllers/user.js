@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../routes/models/user');
 
-router.post('/signup', (req, res, next) => {
+exports.signup = (req, res, next) => {
     const { username } = req.body;
     User.findOne({ username }, (err, user) => {
         if (user) {
@@ -12,9 +12,9 @@ router.post('/signup', (req, res, next) => {
             //user does not exist
         }
     });
-});
+};
 
-router.get('/login', (req, res, next) => {
+exports.login = (req, res, next) => {
     const { username, password } = req.body;
     User.findOne({ username }, (err, user) => {
         if (user) {
@@ -23,6 +23,4 @@ router.get('/login', (req, res, next) => {
             //user does not exist
         }
     });
-});
-
-exports.module = router;
+};
