@@ -2,12 +2,19 @@ const express = require('express');
 const app = express();
 const helmet = require('helmet');
 const compression = require('compression');
+const mongoose = require('mongoose');
 
 app.use(express.urlencoded());
 app.use(express.json());
 
 app.use(helmet());
 app.use(compression());
+
+mongoose.connect('mongodb+srv://testUser:<test123>@fitnessjournal.9hmw7.mongodb.net/<FitnessJournal>?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin",
@@ -22,6 +29,7 @@ app.use((req, res, next) => {
 
 // User Authentication
 app.use('/login', (req, res, next) => {
+    const { username, password } = req.body;
 
 });
 //
