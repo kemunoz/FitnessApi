@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const userRoutes = require('./api/routes/user');
+const workoutRoutes = require('./api/routes/workout');
+const jwt = require('jsonwebtoken');
 app.use(express.urlencoded());
 app.use(express.json());
 
@@ -32,6 +34,26 @@ app.use((req, res, next) => {
 });
 
 app.use('/user', userRoutes);
+app.use((req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        const token = authHeader.split(' ')[1]
+        jwt.verify(token, 'secret', (err, user) => {
+            if (err) {
+                res.status(403).json({
+                    message: 'BAD_TOKEN'
+                });
+            } else {
+                next();
+            }
+        });
+    } else {
+        res.status(401).json({
+            message: 'NO_AUTHHEADER'
+        });
+    }
+});
+app.use('/workout', workoutRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
