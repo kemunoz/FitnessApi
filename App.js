@@ -40,7 +40,7 @@ app.use((req, res, next) => {
         const token = authHeader.split(' ')[1]
         jwt.verify(token, 'secret', (err, user) => {
             if (err) {
-                res.status(403).json({
+                res.status(401).json({
                     message: 'BAD_TOKEN'
                 });
             } else {

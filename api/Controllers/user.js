@@ -41,10 +41,10 @@ exports.login = (req, res, next) => {
             const passwordDB = user.password;
             bcrypt.compare(password, passwordDB, async (err, result) => {
                 if (result == true) {
-                    const token = await jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60) }, 'secret');
+                    const userToken = await jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60) }, 'secret');
                     res.status(200).json({
                         message: "LOGGED_IN",
-                        token,
+                        userToken,
                         payload: { id: user._id }
                     });
                 } else {
@@ -57,6 +57,22 @@ exports.login = (req, res, next) => {
         } else {
             res.status(404).json({
                 message: "USER_NOT_FOUND"
+            });
+        }
+    });
+};
+
+exports.refresh = async (req, res, next) => {
+    const { refreshToken } = req.body;
+    jwt.verify(refreshToken, 'secret', async (err, user) => {
+        if (err) {
+            res.status(400).json({
+                err: err
+            });
+        } else {
+            const token = await jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60) }, 'secret');
+            res.status(200).json({
+                token
             });
         }
     });
